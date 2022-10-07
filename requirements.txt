@@ -1,0 +1,11 @@
+fastapi==0.85.0
+fastapi-mail
+uvicorn==0.18.3
+pydantic
+redis
+motor==3.0.0
+python-decouple
+python-multipart
+PyJWT
+passlib
+python-dotenv==0.21.0
