@@ -6,7 +6,7 @@ import service.product_rules as product_rules
 from fastapi import APIRouter, status
 from models.product import Product, ProductGeneral, ProductUpdated, ProductCode
 # Minha rota API de Produtos
-rota_produto = APIRouter(prefix="/api/products",tags=["Produtos"],)
+product_route = APIRouter(prefix="/api/products",tags=["Produtos"],)
 
 product_CREATION_DESCRIPTION = """
 Criação de um novo Produto. Para registrar uma nova Produto:
@@ -37,7 +37,7 @@ class HasAnotherEmail(BaseModel):
             }}
 
 
-@rota_produto.post("/", summary="Criação de novo Produto",description=product_CREATION_DESCRIPTION,
+@product_route.post("/", summary="Criação de novo Produto",description=product_CREATION_DESCRIPTION,
     status_code=status.HTTP_201_CREATED, response_model = ProductCode,
     responses={
         status.HTTP_409_CONFLICT: {
@@ -52,7 +52,7 @@ async def create_new_product(product: Product):
     return new_product
 
 
-@rota_produto.put("/{codigo}",status_code=status.HTTP_202_ACCEPTED,
+@product_route.put("/{codigo}",status_code=status.HTTP_202_ACCEPTED,
     summary="Atualização do Produto",
     description="Atualiza um Produto pelo código",
 )
@@ -60,7 +60,7 @@ async def update_product(code: str, product: ProductUpdated):
     await product_rules.update_by_code(code, product)
 
 
-@rota_produto.delete("/{code}", status_code=status.HTTP_202_ACCEPTED, summary="Remoção do Produto",
+@product_route.delete("/{code}", status_code=status.HTTP_202_ACCEPTED, summary="Remoção do Produto",
     description="Remove o Produto pelo código",)
 
 async def remove_product(code: str):
@@ -68,7 +68,7 @@ async def remove_product(code: str):
     await product_rules.remove_by_code(code)
 
 
-@rota_produto.get("/{code}",response_model=ProductGeneral,summary="Pesquisar pelo Produto",
+@product_route.get("/{code}",response_model=ProductGeneral,summary="Pesquisar pelo Produto",
     description="Pesquisar um Produto pelo código",)
 async def get_product_by_code(code: str):
     # Pesquisa a Produto pelo código.
@@ -76,7 +76,7 @@ async def get_product_by_code(code: str):
     return product
 
 
-@rota_produto.get("/",response_model=List[ProductGeneral],
+@product_route.get("/",response_model=List[ProductGeneral],
     summary="Pesquisar todos os Produtos",
     description="Pesquisar por todos os Produtos.",)
 
