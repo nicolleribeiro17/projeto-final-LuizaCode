@@ -4,9 +4,9 @@ from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from service.rules_exception import ExceptionNotFound, OtherExceptionRules, RulesException, OtherCodesExceptions
-from router.user_router import rota_usuario
-from router.principal_router import rota_principal
-from router.product_router import rota_produto
+from router.user_router import user_route
+from router.principal_router import principal_route
+from router.product_router import product_route
 from router.address_router import address_route
 
 def ExceptionNotFound_Response(requisicao: Request, excecao: ExceptionNotFound):
@@ -51,9 +51,9 @@ def Exception_Interceptor_Config(app: FastAPI) -> Tuple[Callable]:
 
 def configurar_rotas(app: FastAPI):
     # Publicando as rotas para o FastAPI.
-    app.include_router(rota_principal)
-    app.include_router(rota_usuario)
-    app.include_router(rota_produto)
+    app.include_router(principal_route)
+    app.include_router(user_route)
+    app.include_router(product_route)
     app.include_router(address_route)
 
 # def configurar_api_rest(app: FastAPI):
