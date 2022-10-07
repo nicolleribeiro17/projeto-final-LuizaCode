@@ -19,6 +19,12 @@ async def search_by_code(code: str, throws_exception_if_not_found: bool = False)
         raise ExceptionNotFound("Usuário não encontrado")
     return user
 
+async def search_by_email(email: str, throws_exception_if_not_found: bool = False) -> Optional[dict]:
+    user_mail = await user_server.get_by_email(email)
+    if not user_mail and throws_exception_if_not_found:
+        raise ExceptionNotFound("Usuário não encontrado")
+    return user_mail
+
 # busca todos 
 async def search_all() -> List[dict]:
     all = await user_server.get_all()
