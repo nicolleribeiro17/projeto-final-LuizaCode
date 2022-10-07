@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 #import service.address_rules as address_rules
 from fastapi import APIRouter, status
 from models.address import AddressCode, Address, AddressGeneral
+from models.user import User
 from server.address_server import create_address_user, get_address_by_user_code
 
 # Minha rota API de endereços
@@ -27,8 +28,8 @@ Se o endereço for criado corretamente a API retornará sucesso
 
 @address_route.post("/", summary="Criação de novo endereço",description=ADDRESS_CREATION_DESCRIPTION, status_code=status.HTTP_201_CREATED, response_model = AddressCode)
 
-async def create_new_address(address: Address):
-    new_address = await create_address_user(address)
+async def create_new_address(user: User, address: Address):
+    new_address = await create_address_user(user,address)
     return new_address
 
 
