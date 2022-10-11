@@ -12,11 +12,12 @@ user_route = APIRouter(prefix="/api/users",tags=["Users"],)
 USER_CREATION_DESCRIPTION = """
 Criação de um novo usuário. Para registrar um novo usuário:
 
-- `nome` Deve ter no minimo 10 caracteres.
+- `nome` Deve ter no minimo 6 caracteres.
 - `email`: Deve ter nome único.
 - `password`: Deve ter uma senha.
-- `tempo`: Opcionalmente pode ter um tempo. Se informado deve ser
-maior que 0 (zero).
+- `is_active`: boolean.
+- `is_admin`: boolean.
+
 
 Se o usuário for criado corretamente a API retornará sucesso
 (código HTTP 201) e no corpo da resposta um registro com o campo
@@ -52,8 +53,7 @@ async def create_new_user(user: User):
     new_user = await user_rules.insert_new_user(user)
     return new_user
 
-
-@user_route.put("/{codigo}",status_code=status.HTTP_202_ACCEPTED,
+@user_route.put("/update/{code}",status_code=status.HTTP_202_ACCEPTED,
     summary="Atualização do usuário",
     description="Atualiza um usuário pelo código",
 )
@@ -68,8 +68,8 @@ async def remove_user(code: str):
     await user_rules.remove_by_code(code)
 
 
-@user_route.get("/{code}",response_model=UserGeneral,summary="Pesquisar pelo usuário",
-    description="Pesquisar um usuário pelo código",)
+@user_route.get("/code/{code}",response_model=UserGeneral,summary="Pesquisar pelo usuário",
+    description="Pesquisar um usuário pelo código")
 async def get_user_by_code(code: str):
     user = await user_rules.search_by_code(code, True)
     return user
@@ -80,5 +80,13 @@ async def get_user_by_code(code: str):
     description="Pesquisar por todos os usuários.",)
 
 async def get_all_users() -> List[UserGeneral]:
+   
     all = await user_rules.search_all()
     return all
+
+@user_route.get("/email/{email}",response_model=UserGeneral,summary="Pesquisar pelo usuário",
+    description="Pesquisar um usuário pelo código")
+async def get_user_by_code(email: str):
+    
+    user = await user_rules.search_by_email(email, True)
+    return user

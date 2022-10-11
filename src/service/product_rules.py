@@ -5,70 +5,78 @@ Regras e ajustes para Produtos.
 from typing import List, Optional
 from uuid import uuid4
 
-from server import product_server
-from models.product import Product, ProductGeneral
-
+import server.product_server as product_server
+from models.product import Product, ProductGeneral, ProductUpdated
 from service.rules_exception import OtherExceptionRules, RulesException, ExceptionNotFound, OtherCodesExceptions
-
-
 
 CAMPO_CODE = product_server.ProductField.CODE
 
-# procura pelo codigo
-async def search_by_code(code: str, lanca_excecao_se_nao_encontrado: bool = False) -> Optional[dict]:
+# procura o produto pelo codigo
+async def search_by_code(code: str, throws_exception_if_not_found: bool = False) -> Optional[dict]:
     product = await product_server.get_by_code(code)
+    if not product and throws_exception_if_not_found:
+        raise ExceptionNotFound("Produto não encontrado")
+    return product
+
+# procura o produto pelo sku
+async def search_by_sku(sku: str, throws_exception_if_not_found: bool = False) -> Optional[dict]:
+    product_sku = await product_server.get_by_sku(sku)
+    if not product_sku and throws_exception_if_not_found:
+        raise ExceptionNotFound("Produto não encontrado")
+    return product_sku
+
+# procura pelo nome
+async def search_by_name(name: str, lanca_excecao_se_nao_encontrado: bool = False) -> Optional[dict]:
+    product = await product_server.get_by_name(name)
     if not product and lanca_excecao_se_nao_encontrado:
         raise ExceptionNotFound("Produto não encontrado")
     return product
 
+# procura pela categoria
+async def search_by_category(category: str, lanca_excecao_se_nao_encontrado: bool = False) -> Optional[dict]:
+    product = await product_server.get_by_category(category)
+    if not product and lanca_excecao_se_nao_encontrado:
+        raise ExceptionNotFound("Produto não encontrado")
+    return product
 
+# busca todos 
 async def search_all() -> List[dict]:
-    todas = await product_server.get_all()
-    return todas
+    all = await product_server.get_all()
+    return all
 
+# valida o produto
 async def validate_product(product: Product, code_base: Optional[str] = None):
     is_new_product = code_base is None
-      
-    outra_product = await product_server.get_by_name(product.name)
-    if (outra_product is not None) and (
+
+    other_product = await product_server.get_by_sku(product.sku)
+    if (other_product is not None) and (
         is_new_product or
-        (code_base != outra_product[CAMPO_CODE])
+        (code_base != other_product[CAMPO_CODE])
     ):
-        raise OtherExceptionRules("Há outra Produto com este nome")
+        raise OtherExceptionRules("Há outro produto com este sku")
 
 
 async def insert_new_product(product: Product) -> ProductGeneral:
     await validate_product(product)
-
-    novo_product = product.dict()
-    novo_product[product_server.ProductField.CODE] = str(uuid4())
-
-    await product_server.create_new_product(novo_product)
-
-    product_geral = ProductGeneral(**novo_product)
-
+    new_product = product.dict()
+    new_product[product_server.ProductField.CODE] = str(uuid4())
+    await product_server.create_new_product(new_product)
+    product_geral = ProductGeneral(**new_product)
     return product_geral
 
-
 async def remove_by_code(code: str):
-    removeu = await product_server.delete_by_code(code)
+    remove = await product_server.delete_by_code(code)
 
-    if not removeu:
-        raise ExceptionNotFound("Produto não encontrada")
+    if not remove:
+        raise ExceptionNotFound("Usuário não encontrada")
 
+async def update_by_code(code: str, product: ProductUpdated):
 
-async def update_by_code(code: str, product: ProductGeneral):
     await search_by_code(code, True)
 
-    if product.code is not None and product.code != code:
-        raise OtherCodesExceptions
-    validate_product(product, code)
-
-    product_para_banco = product.dict()
-
-    if product.code is None:
-        product_para_banco.pop(CAMPO_CODE, None)
+    data = dict(product)
+    data = {k: v for k, v in data.items() if v is not None}
 
     await product_server.update_product_by_code(
-        code, product_para_banco
+        code, data
     )

@@ -4,21 +4,24 @@ from pydantic import BaseModel, Field
 
 #import service.address_rules as address_rules
 from fastapi import APIRouter, status
-from models.address import AddressCode, Address, AddressGeneral
-from models.user import User
-from server.address_server import create_address_user, get_address_by_user_code
+from models.address import Address, AddressGeneral, UserAddress
+from models.user import User, UserCode, UserForAddress
+from service.address_rules import create_address,get_address_by_user_email
 
 # Minha rota API de endereços
-address_route = APIRouter(prefix="/api/addresss",tags=["addresss"],)
+address_route = APIRouter(prefix="/api/address",tags=["address"],)
 
 ADDRESS_CREATION_DESCRIPTION = """
-Criação de um novo endereço. Para registrar um novo endereço:
+Criação de um novo endereço para o usuario:
 
-- `nome` Deve ter no minimo 10 caracteres.
-- `email`: Deve ter nome único.
-- `password`: Deve ter uma senha.
-- `tempo`: Opcionalmente pode ter um tempo. Se informado deve ser
-maior que 0 (zero).
+- `street` Rua
+- `number` Numero
+- `zip_code`: CEP.
+- `district`: Bairro.
+- `city`: Cidade.
+- `state`: Estado (Apenas a sigla).
+- `is_delivery`: E endereco padrao para entrega.
+
 
 Se o endereço for criado corretamente a API retornará sucesso
 (código HTTP 201) e no corpo da resposta um registro com o campo
@@ -26,37 +29,21 @@ Se o endereço for criado corretamente a API retornará sucesso
 """
 
 
-@address_route.post("/", summary="Criação de novo endereço",description=ADDRESS_CREATION_DESCRIPTION, status_code=status.HTTP_201_CREATED, response_model = AddressCode)
+@address_route.post("/", summary="Criação de novo endereço",description=ADDRESS_CREATION_DESCRIPTION, status_code=status.HTTP_201_CREATED)
 
-async def create_new_address(user: User, address: Address):
-    new_address = await create_address_user(user,address)
+async def create_new_address(user: UserForAddress, address: Address):
+    new_address = await create_address(user,address)
     return new_address
 
 
-# @address_route.put("/{codigo}",status_code=status.HTTP_202_ACCEPTED,
-#     summary="Atualização do endereço",
-#     description="Atualiza um endereço pelo código",)
-# async def update_address(code: str, address: AddressUpdate):
-#     await address_rules.update_by_code(code, address)
 
-
-# @address_route.delete("/{code}", status_code=status.HTTP_202_ACCEPTED, summary="Remoção do endereço",
-#     description="Remove o endereço pelo código",)
-# async def remove_address(code: str):
-#     await address_rules.remove_by_code(code)
-
-
-@address_route.get("/{code}",response_model=AddressGeneral,summary="Pesquisar pelo endereço",
+@address_route.get("/email/{email}", summary="Pesquisar pelo endereço",
     description="Pesquisar um endereço pelo código",)
-async def get_address_by_code(code: str):
-    address = await get_address_by_user_code(code, True)
+async def get_address_by_code(email: str):
+    address = await get_address_by_user_email(email)
     return address
 
 
-# @address_route.get("/",response_model=List[AddressGeneral],
-#     summary="Pesquisar todos os endereços",
-#     description="Pesquisar por todos os endereços.",)
 
-# async def get_all_addresss() -> List[AddressGeneral]:
-#     all = await address_rules.search_all()
-#     return all
+
+

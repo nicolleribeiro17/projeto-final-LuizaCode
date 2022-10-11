@@ -8,6 +8,8 @@ from router.user_router import user_route
 from router.principal_router import principal_route
 from router.product_router import product_route
 from router.address_router import address_route
+from router.cart_router import cart_route
+from router.order_router import order_route
 
 def ExceptionNotFound_Response(requisicao: Request, excecao: ExceptionNotFound):
     # Responde o erro 404
@@ -55,6 +57,8 @@ def configurar_rotas(app: FastAPI):
     app.include_router(user_route)
     app.include_router(product_route)
     app.include_router(address_route)
+    app.include_router(cart_route)
+    app.include_router(order_route)
 
 # def configurar_api_rest(app: FastAPI):
 #     # Configurando o CORS

@@ -7,7 +7,7 @@ class User(BaseModel):
     email: EmailStr = Field(unique=True, index=True)
     password: str
     is_active: bool = Field(default=True)
-    is_admin: bool = Field(default=True)
+    is_admin: bool = Field(default=False)
     
 class UserUpdate(BaseModel):
     name: Optional[str]
@@ -17,24 +17,16 @@ class UserUpdate(BaseModel):
     is_admin: Optional[bool]
     
 class UserCode(BaseModel):
-    code: str = Field(..., description="Código do usuário, no formato uuid v4",)
-     
-    class Config:
-        schema_extra = {
-            "example": {
-                "codigo": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6",
-            }
-        }
-
+    code: str = Field(..., description="Código do usuário, no formato uuid v4")
+   
 class UserGeneral(UserCode, User):
     ...
 
-class UserList(User):
-    _id: str
+class UserForAddress(BaseModel):
+    user_code: str
     email: EmailStr
     
-    class Config:
-        orm_mode = True
+ 
 
 
 

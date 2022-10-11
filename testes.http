@@ -1,0 +1,184 @@
+#=========================================================================#
+#USER
+#=========================================================================#
+###
+# get usuario
+GET http://localhost:8000/api/users
+
+###
+#GET usuario by email
+GET http://localhost:8000/api/users/email/isadora3@example.com
+
+###
+# Get usuario by code
+GET http://localhost:8000/api/users/code/d368f6d4-eace-41e0-bffc-83d45fba52ae
+
+###
+# Delete usuario by code
+DELETE  http://localhost:8000/api/users/d368f6d4-eace-41e0-bffc-83d45fba52ae
+
+###
+# Update usuario by code
+PUT  http://localhost:8000/api/users/update/7fdb8e4b-803b-432c-b601-4c4a5357bdb7
+
+{
+        "email": "ozair@example.com"
+}
+
+###
+# Cadastro de usuario
+POST http://localhost:8000/api/users
+
+  {
+        "name": "Nicolle",
+        "email": "isadora4@example.com",
+        "password": "123456",
+        "is_active": true,
+        "is_admin": false
+      }
+
+
+#=========================================================================#
+#PRODUCT
+#=========================================================================#
+
+###
+# get de produtos
+GET http://localhost:8000/api/products
+
+###
+# busca de produtos by code
+GET http://localhost:8000/api/products/code/3cfad7d5-e7a4-482f-9917-f5cb661086ee
+
+
+###
+# busca de produtos by name
+GET http://localhost:8000/api/products/name/Caneta Bic
+
+###
+# busca de produtos by category
+GET http://localhost:8000/api/products/category/escrita
+###
+# busca de produtos by sku
+GET http://localhost:8000/api/products/sku/13555
+
+###
+# Cadastro de produtos
+POST http://localhost:8000/api/products
+
+{
+  "name": "Caneta Bic",
+  "description": "Caneta Amarela",
+  "price": 1.50,
+  "units_in_stock": 10,
+  "image": "url_caneta",
+  "category": "escrita",
+  "sku": "135587"
+}
+
+###
+# Atualizacao de produtos pelo codigo
+PUT http://localhost:8000/api/products/update/code/3cfad7d5-e7a4-482f-9917-f5cb661086ee
+
+{
+    "price" : 2  
+}
+
+###
+# delete produtos by sku
+DELETE  http://localhost:8000/api/products/remove/code/d7e316cc-628d-4c83-b1c4-da5bf1f8221d
+
+#=========================================================================#
+#ADDRESS
+#=========================================================================#
+
+###
+# Cadastro de endereco
+GET http://localhost:8000/api/address
+
+###
+# Cadastro de endereco
+GET http://localhost:8000/api/address/email/ane4@gmail.com
+
+
+
+
+
+###
+# Cadastro de endereco
+POST http://localhost:8000/api/address
+
+{  
+  "user": {
+    "user_code": "eacec054-29a3-4759-8cb1-ba522a1d33c6",
+    "email":"ane4@gmail.com"
+  },
+   "address": {
+    "street": "string",
+    "number": 13,
+    "zip_code": "st56ring",
+    "district": "string",
+    "city": "string",
+    "state": "df",
+    "is_delivery": false
+
+  }
+}
+
+
+
+#=========================================================================#
+#ORDER_ITEM
+#=========================================================================#
+###
+# get order_item
+GET http://localhost:8000/api/order_items
+ 
+###
+#GET order_item by email
+GET http://localhost:8000/api/order_items/email/isadora3@example.com
+ 
+###
+# Get order_item by code
+GET http://localhost:8000/api/order_items/code/d368f6d4-eace-41e0-bffc-83d45fba52ae
+ 
+###
+# Delete order_item by code
+DELETE  http://localhost:8000/api/order_items/d368f6d4-eace-41e0-bffc-83d45fba52ae
+ 
+###
+# Update order_item by code
+PUT  http://localhost:8000/api/order_items/update/7fdb8e4b-803b-432c-b601-4c4a5357bdb7
+ 
+{
+        "email": "isadora@example.com"
+}
+ 
+ 
+#=========================================================================#
+#ORDER_ITEM
+#=========================================================================#
+###
+# Cadastro de order_item
+POST http://localhost:8000/api/cart
+ 
+  {
+    "user": {
+        "user_code": "eacec054-29a3-4759-8cb1-ba522a1d33c6",
+        "email":"ane4@gmail.com"
+    },
+    "order_item":{
+          "product": {
+                "name": "Caneta Bic",
+                "description": "Caneta Verde",
+                "price": 1.5,
+                "units_in_stock": 10,
+                "image": "url_caneta",
+                "category": "escrita",
+                "sku": "13555"
+              } ,
+          "quantity": 2           
+        }        
+      
+  }
+ 
