@@ -52,7 +52,7 @@ async def validate_user(user: User, code_base: Optional[str] = None):
         raise OtherExceptionRules("Há outro usuário com este email")
 
       
-def check_email(email):    
+async def check_email(email):    
     regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
     if not re.search(regex,email) :
         raise OtherExceptionRules("Email invalido")

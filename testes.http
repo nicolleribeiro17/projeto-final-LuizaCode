@@ -22,7 +22,7 @@ DELETE  http://localhost:8000/api/users/d368f6d4-eace-41e0-bffc-83d45fba52ae
 PUT  http://localhost:8000/api/users/update/7fdb8e4b-803b-432c-b601-4c4a5357bdb7
 
 {
-        "email": "ozair@example.com"
+        "email": "ozair3@example.com"
 }
 
 ###
@@ -170,15 +170,44 @@ POST http://localhost:8000/api/cart
     "order_item":{
           "product": {
                 "name": "Caneta Bic",
-                "description": "Caneta Amarela",
+                "description": "Caneta Azul",
                 "price": 1.5,
                 "units_in_stock": 10,
                 "image": "url_caneta",
                 "category": "escrita",
-                "sku": "135587"
+                "sku": "1355"
               } ,
           "quantity": 2           
         }        
       
   }
+
+###
+# deletar carrinho
+DELETE  http://localhost:8000/api/cart/2e0f13e5-3de7-410f-aa36-4a8ec6801cf2
+
+###
+# deletar produto do carrinho
+DELETE  http://localhost:8000/api/cart/delete/product
+
+{
+  "user": {
+        "user_code": "eacec054-29a3-4759-8cb1-ba522a1d33c6",
+        "email":"ane4@gmail.com"
+    },
+  "product_sku": "13555"
+}
+ 
+###
+# deletar produto do carrinho
+PUT  http://localhost:8000/api/cart/update
+
+{
+  "user": {
+        "user_code": "eacec054-29a3-4759-8cb1-ba522a1d33c6",
+        "email":"ane4@gmail.com"
+    },
+  "product_sku": "13555",
+  "quantity" : 1
+}
  

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
 from bson.json_util import dumps
 import json
 from models.cart import Cart
@@ -34,17 +34,20 @@ async def create_new_cart(new_cart: dict) -> dict:
     await cart_collection.insert_one(new_cart)
     return new_cart
  
-async def delete_by_code(cart_code: str) -> bool:
+async def delete_cart_by_code(cart_code: str) -> bool:
     filter = {CartField.CODE: cart_code}
     result = await cart_collection.delete_one(filter)
     removed = result.deleted_count > 0
     return removed
  
+
+
 async def insert_into_cart(order_item: OrderItem, existingCart: Cart):
+  
     try:  
         cart = await cart_collection.update_one(
             {'code': existingCart['code']},
-            {"$addToSet": {"orderItem":{order_item.product.sku: order_item.dict()}}}          
+            {"$addToSet": {"orderItem": order_item.dict() }}
             
         ) 
         cart = await cart_collection.update_one(
@@ -58,17 +61,20 @@ async def insert_into_cart(order_item: OrderItem, existingCart: Cart):
     except Exception as e:
         print(f'insert_into_cart.error: {e}')    
 
-async def update_quantity(code: str, filter: str):
-    
-    print(filter)
+async def update_quantity(filter: Dict, update: Dict):    
     try: 
-        cart = await cart_collection.update_one(
-            {'code': code},
-            { '$set': {filter}})
+        cart = await cart_collection.update_one(filter,update)      
     except Exception as e:
-        print(f'insert_into_cart.error: {e}')    
+        print(f'update_quantity.error: {e}')    
  
 
+
+# async def remove_from_cart(filter: dict) -> bool:
+    
+#     result = await cart_collection.update_one(filter,
+#     { "$pull": {"orderItem.product.$.sku": '13555'}})
+#     removed = result.deleted_count > 0
+#     return removed
 
 
 # def update_item(self, product, quantity, option_values=[]):

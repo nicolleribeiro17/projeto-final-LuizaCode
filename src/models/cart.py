@@ -13,12 +13,15 @@ class Cart(BaseModel):
     total_itens: int
 
 class CartCode(BaseModel):
-    code: str = Field(..., description="Código do usuário, no formato uuid v4")
+    code: str = Field(..., description="Código do carrinho, no formato uuid v4")
    
 class CartGeneral(CartCode, Cart):
     ...
   
-  
+class CartUpdate(BaseModel):
+    user: UserForAddress
+    product_sku: str
+    quantity : int
 
     
     

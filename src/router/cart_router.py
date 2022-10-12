@@ -3,7 +3,7 @@ from typing import List
 from pydantic import BaseModel, Field
 from models.user import UserForAddress
 from fastapi import APIRouter, status
-from models.cart import Cart, OrderItem
+from models.cart import Cart, CartCode, CartUpdate, OrderItem
 import service.cart_rules as cart_rules
  
 # Minha rota API de Usuários
@@ -26,22 +26,30 @@ async def add_to_cart(user: UserForAddress,  order_item: OrderItem):
     new_cart = await cart_rules.add_to_cart(user,order_item)
     return new_cart
  
-@cart_route.put("/update/{code}",status_code=status.HTTP_200_OK,
+@cart_route.put("/update",status_code=status.HTTP_200_OK,
     summary="Atualizar quantidade do produto",
     description="Atualiza um usuário pelo código",
 )
-async def update_quantity(cart : OrderItem, quantity: int):
-    await cart_rules.update_quantity(cart,quantity)
+async def update_quantity(cartUpdate : CartUpdate):
+    #print(cartUpdate)
+    await cart_rules.update_quantity(cartUpdate)
  
  
 @cart_route.delete("/{code}", status_code=status.HTTP_200_OK, summary="Remoção do usuário",
-    description="Remove o produto do carrinho")
-async def remove_from_cart(cart : OrderItem):
-    await cart_rules.remove_from_cart(cart)
+    description="Remove o carrinho")
+async def remove_cart(code : str):
+    await cart_rules.remove_cart(code)
+
+# @cart_route.delete("/delete/product", status_code=status.HTTP_200_OK, summary="Remoção do usuário",
+#     description="Remove o produto do carrinho")
+# async def remove_product_from_cart(cartProduct: CartProduct):
+#     await cart_rules.remove_from_cart(cartProduct)
+    
+   
  
  
  
- 
+  
 
 
 
