@@ -41,23 +41,57 @@ async def delete_by_code(cart_code: str) -> bool:
     return removed
  
 async def insert_into_cart(order_item: OrderItem, existingCart: Cart):
-  
-    value = existingCart['total_value'] + order_item['price']
-    print(value)
-    tot_item = existingCart['total_itens'] + order_item['quantity']
-    print(tot_item)
     try:  
         cart = await cart_collection.update_one(
             {'code': existingCart['code']},
-            {"$addToSet": {"orderItem":{order_item['product']['sku']: order_item}},
-            "total_value": value,
-            "total_itens": tot_item}       
+            {"$addToSet": {"orderItem":{order_item.product.sku: order_item.dict()}}}          
             
         ) 
+        cart = await cart_collection.update_one(
+            {'code': existingCart['code']},         
+            {"$set": {"total_value":existingCart['total_value'] + order_item.price, 
+                      "total_itens": existingCart['total_itens'] + order_item.quantity}})
+
         if cart.modified_count:
             return cart.modified_count 
         return None
     except Exception as e:
         print(f'insert_into_cart.error: {e}')    
+
+async def update_quantity(code: str, filter: str):
     
+    print(filter)
+    try: 
+        cart = await cart_collection.update_one(
+            {'code': code},
+            { '$set': {filter}})
+    except Exception as e:
+        print(f'insert_into_cart.error: {e}')    
  
+
+
+
+# def update_item(self, product, quantity, option_values=[]):
+#         """
+#         To update :class:`CartItem` object quantity.
+        
+#         :param product: Unique id or name of :class:`Product` object or instance of :class:`Product`.
+#         :param quantity: Updated quantity.
+#         :param option_values: Option values of the product(default []).
+#         """
+#         if not isinstance(quantity, (int, float)):
+#             raise TypeError('quantity field value must be integer or float type', 'price')
+#         elif not (quantity or quantity >= 1):
+#             raise ValueError('quantity field value must be greater then 1')
+            
+#         cart_item = self.find_item(product, option_values)
+        
+#         if cart_item:
+#             cart_item.update_quantity(quantity)
+
+# def update_quantity(self, quantity):
+#     """
+#     To update existing quantity related to :class:`Product` object.
+#     :param quantity: Product quantity.
+#     """
+#     self.quantity = quantity

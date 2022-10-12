@@ -1,6 +1,8 @@
 
+from turtle import update
 from typing import List, Optional
 from uuid import uuid4
+from models import order_item
 from models.user import UserForAddress
 from server import order_item_server
  
@@ -15,65 +17,52 @@ CAMPO_CODE = cart_server.CartField.CODE
  
  
 async def add_to_cart(user: UserForAddress,  order_item: OrderItem):
- 
     #TODO checar se existe um carrinho para aquele usuario (criar funcao get_cart_by_user)
-    #Se existir-continuar , se nao existir- criar carrinho ( criar NO CART create_new_cart)
-    existinguser = await search_if_user_exists(user.user_code)
-    if not existinguser:
-        raise ExceptionNotFound("Usuário não encontrado")
+    #Se existir-continuar , se nao existir- criar carrinho ( criar NO CART create_new_cart) 
+    await search_if_user_exists(user.user_code) 
+
+    order_item = await update_order_item_Price(order_item)  
+   
     existingCart = await get_cart_by_user(user.user_code)
-    if existingCart is None:
-        return await create_new_cart(user,order_item)        
-    return await insert_into_cart(user,order_item,existingCart)    
- 
+    
+    if existingCart is not None:
+        existintProduct= await check_if_product_in_cart(order_item,existingCart)
+        if existintProduct is None:
+            return await insert_into_cart(user,order_item,existingCart)              
+        else:
+            new_quantity = existintProduct['quantity'] + order_item.quantity
+            return await update_quantity(order_item, existingCart, new_quantity)  
+    return await create_new_cart(user,order_item)  
  
 
+
  
-async def create_new_cart(user: UserForAddress,  order_item: OrderItem) -> CartGeneral:  
-    
-    order_item = order_item.dict()  
-    value = order_item['product']['price'] * order_item['quantity']   
-    order_item[order_item_server.OrderItemField.PRICE] = value
-    new_cart = dict(user = user.dict(),orderItem = [{order_item['product']['sku']: order_item}],total_value = value, total_itens = order_item['quantity'])
+async def create_new_cart(user: UserForAddress,  order_item: OrderItem) -> CartGeneral:      
+    new_cart = dict(user = user.dict(),orderItem = [{order_item.product.sku: order_item.dict()}],total_value = order_item.price, total_itens = order_item.quantity)
     new_cart[cart_server.CartField.CODE] = str(uuid4())
     await cart_server.create_new_cart(new_cart)  
-    # cart_geral = CartGeneral(**new_cart)
-    return {'code' : new_cart['code']}
+    return {'sku' : order_item.product.sku}
  
-async def calculate_cart_value(order_item: OrderItem) -> float:
-    total = 0
-    for item in order_item:
-        print(order_item.name)
-
+async def update_order_item_Price(order_item: OrderItem):
+   order_item.price = order_item.product.price * order_item.quantity
+   return order_item
 
 async def insert_into_cart(user: UserForAddress,  order_item: OrderItem, existingCart: Cart):
-    #TODO inserir o produt no carrinho -- Antes e preciso validar se o produto ja existe no carrinho,
-    #  e caso ja exista fazer um update na quantidade de itens
-    existintProduct= await check_if_product_in_cart(order_item,existingCart)
-    if not existintProduct :
-        order_item = order_item.dict()  
-        value = order_item['product']['price'] * order_item['quantity']   
-        order_item[order_item_server.OrderItemField.PRICE] = value
-        await cart_server.insert_into_cart(order_item,existingCart)     
-    # await update_quantity(user,order_item,existingCart)   
-    # return
- 
-async def update_quantity(cart: OrderItem, quantity:int):
-    #TODO Metodo para alterar a quantidade de um determinado produto
-    return
+    await cart_server.insert_into_cart(order_item,existingCart)    
+    return {'code' : order_item.product.sku } 
    
  
+async def update_quantity(order_item: OrderItem, existintCart: Cart, quantity):
+    #TODO Metodo para alterar a quantidade de um determinado produto
+    sku = order_item.product.sku
+    new_price = quantity * order_item.product.price
+    filter= "orderItem.2.price : "+ str(new_price) + " , orderItem.2.quantity : "+ str(quantity)
+    return await cart_server.update_quantity(existintCart['code'], filter)
+  
+ 
 async def check_if_product_in_cart(order_item: OrderItem, existingCart: Cart):
-
-    #TODO melhorar esse if aninhado
-    existintProduct = False
-    for item in existingCart['orderItem']:
-        for key in item:
-            if(key == order_item.product.sku):
-                existintProduct = True
+    return dict((key,d[key]) for d in existingCart['orderItem'] for key in d).get(order_item.product.sku)
     
-    return existintProduct
-
 
 
  
@@ -81,8 +70,7 @@ async def check_if_product_in_cart(order_item: OrderItem, existingCart: Cart):
  
 async def get_cart_by_user(code: str):
     #TODO pesquisar se o carrinho existe pelo id do usuario
-    cart = await cart_server.get_cart_by_user_id(code)
-    
+    cart = await cart_server.get_cart_by_user_id(code)    
     return cart
  
 async def remove_from_cart(cart : OrderItem):

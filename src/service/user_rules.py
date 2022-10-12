@@ -4,7 +4,7 @@ Regras e ajustes para Usuários.
 
 from typing import List, Optional
 from uuid import uuid4
-
+import re 
 from server import user_server
 from models.user import User, UserGeneral, UserUpdate
 
@@ -23,7 +23,9 @@ async def search_by_code(code: str, throws_exception_if_not_found: bool = False)
 # procura o usuário pelo codigo
 async def search_if_user_exists(code: str) -> bool:    
     user = await user_server.get_by_code(code)
-    return user != None
+    if not user:
+        raise ExceptionNotFound("Usuário não encontrado")
+    return user 
 
 
 async def search_by_email(email: str, throws_exception_if_not_found: bool = False) -> Optional[dict]:
@@ -49,9 +51,19 @@ async def validate_user(user: User, code_base: Optional[str] = None):
     ):
         raise OtherExceptionRules("Há outro usuário com este email")
 
+      
+def check_email(email):    
+    regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    if not re.search(regex,email) :
+        raise OtherExceptionRules("Email invalido")
+   
+      
+  
+
 
 async def insert_new_user(user: User) -> UserGeneral:
     await validate_user(user)
+    await check_email(user.email)
     new_user = user.dict()
     new_user[user_server.UserField.CODE] = str(uuid4())
     await user_server.create_new_user(new_user)

@@ -26,7 +26,7 @@ async def add_to_cart(user: UserForAddress,  order_item: OrderItem):
     new_cart = await cart_rules.add_to_cart(user,order_item)
     return new_cart
  
-@cart_route.put("/update/{code}",status_code=status.HTTP_202_ACCEPTED,
+@cart_route.put("/update/{code}",status_code=status.HTTP_200_OK,
     summary="Atualizar quantidade do produto",
     description="Atualiza um usuário pelo código",
 )
@@ -34,7 +34,7 @@ async def update_quantity(cart : OrderItem, quantity: int):
     await cart_rules.update_quantity(cart,quantity)
  
  
-@cart_route.delete("/{code}", status_code=status.HTTP_202_ACCEPTED, summary="Remoção do usuário",
+@cart_route.delete("/{code}", status_code=status.HTTP_200_OK, summary="Remoção do usuário",
     description="Remove o produto do carrinho")
 async def remove_from_cart(cart : OrderItem):
     await cart_rules.remove_from_cart(cart)

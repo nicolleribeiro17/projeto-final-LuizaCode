@@ -60,7 +60,7 @@ GET http://localhost:8000/api/products/name/Caneta Bic
 GET http://localhost:8000/api/products/category/escrita
 ###
 # busca de produtos by sku
-GET http://localhost:8000/api/products/sku/13555
+ GET http://localhost:8000/api/products/sku/13555
 
 ###
 # Cadastro de produtos
@@ -81,7 +81,7 @@ POST http://localhost:8000/api/products
 PUT http://localhost:8000/api/products/update/code/3cfad7d5-e7a4-482f-9917-f5cb661086ee
 
 {
-    "price" : 2  
+    "price" : 2
 }
 
 ###
@@ -170,12 +170,12 @@ POST http://localhost:8000/api/cart
     "order_item":{
           "product": {
                 "name": "Caneta Bic",
-                "description": "Caneta Verde",
+                "description": "Caneta Amarela",
                 "price": 1.5,
                 "units_in_stock": 10,
                 "image": "url_caneta",
                 "category": "escrita",
-                "sku": "13555"
+                "sku": "135587"
               } ,
           "quantity": 2           
         }        

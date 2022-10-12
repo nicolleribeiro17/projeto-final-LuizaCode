@@ -57,7 +57,7 @@ async def create_new_product(product: Product):
     return new_product
 
 # PUT 
-@product_route.put("/update/code/{code}",status_code=status.HTTP_202_ACCEPTED,
+@product_route.put("/update/code/{code}",status_code=status.HTTP_200_OK,
     summary="Atualização do produto",
     description="Atualiza um produto pelo código",
 )
@@ -65,7 +65,7 @@ async def update_product(code: str, product: ProductUpdated):
     await product_rules.update_by_code(code, product)
 
 # DELETE 
-@product_route.delete("/remove/code/{code}", status_code=status.HTTP_202_ACCEPTED, summary="Remoção do Produto",
+@product_route.delete("/remove/code/{code}", status_code=status.HTTP_200_OK, summary="Remoção do Produto",
     description="Remove o Produto pelo código",)
 
 async def remove_product(code: str):
@@ -73,7 +73,7 @@ async def remove_product(code: str):
     await product_rules.remove_by_code(code)
 
 # GET CODE
-@product_route.get("/code/{code}",response_model=ProductGeneral,summary="Pesquisar pelo produto",
+@product_route.get("/code/{code}",status_code=status.HTTP_200_OK,response_model=ProductGeneral,summary="Pesquisar pelo produto",
     description="Pesquisar um produto pelo código",)
 async def get_product_by_code(code: str):
     # Pesquisa a Produto pelo código.
@@ -81,7 +81,7 @@ async def get_product_by_code(code: str):
     return product
 
 # GET SKU
-@product_route.get("/sku/{sku}",response_model=ProductGeneral,summary="Pesquisar pelo produto",
+@product_route.get("/sku/{sku}", status_code=status.HTTP_200_OK,response_model=ProductGeneral,summary="Pesquisar pelo produto",
     description="Pesquisar um produto pelo sku",)
 async def get_product_by_sku(sku: str):
     # Pesquisa a Produto pelo código.
@@ -89,21 +89,21 @@ async def get_product_by_sku(sku: str):
     return product
 
 # GET NAME 
-@product_route.get("/name/{name}",response_model=List[ProductGeneral],summary="Pesquisar pelo Produto",
+@product_route.get("/name/{name}",status_code=status.HTTP_200_OK,response_model=List[ProductGeneral],summary="Pesquisar pelo Produto",
     description="Pesquisar um produto pelo nome",)
 async def get_product_by_code(name: str):
     product = await product_rules.search_by_name(name, True)
     return product
 
 # GET CATEGORIA
-@product_route.get("/category/{category}",response_model=List[ProductGeneral],summary="Pesquisar pela categoria",
+@product_route.get("/category/{category}",status_code=status.HTTP_201_CREATED,response_model=List[ProductGeneral],summary="Pesquisar pela categoria",
     description="Pesquisar uma categoria",)
 async def get_products_by_category(category: str):
     product = await product_rules.search_by_category(category, True)
     return product
 
 # GET ALL
-@product_route.get("/",response_model=List[ProductGeneral],
+@product_route.get("/",status_code=status.HTTP_200_OK,response_model=List[ProductGeneral],
     summary="Pesquisar todos os produtos",
     description="Pesquisar por todos os produtos.")
 

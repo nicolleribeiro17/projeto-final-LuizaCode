@@ -27,7 +27,7 @@ async def search_by_sku(sku: str, throws_exception_if_not_found: bool = False) -
 
 # procura pelo nome
 async def search_by_name(name: str, lanca_excecao_se_nao_encontrado: bool = False) -> Optional[dict]:
-    product = await product_server.get_by_name(name)
+    product = await product_server.get_by_name(name)   
     if not product and lanca_excecao_se_nao_encontrado:
         raise ExceptionNotFound("Produto não encontrado")
     return product
@@ -75,8 +75,8 @@ async def update_by_code(code: str, product: ProductUpdated):
     await search_by_code(code, True)
 
     data = dict(product)
-    data = {k: v for k, v in data.items() if v is not None}
-
+    data = {k: v for k, v in data.items() if v is not None and v not in ['code', 'sku']}
+   
     await product_server.update_product_by_code(
         code, data
     )

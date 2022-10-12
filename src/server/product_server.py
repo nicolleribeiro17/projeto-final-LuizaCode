@@ -30,7 +30,6 @@ async def get_by_code(product_code: str) -> Optional[dict]:
 
 # procura pelo nome
 async def get_by_name(product_name: str) -> Optional[dict]:
-   
     filter = {
         ProductField.NAME: product_name
     }

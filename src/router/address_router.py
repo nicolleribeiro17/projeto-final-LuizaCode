@@ -29,12 +29,11 @@ Se o endereço for criado corretamente a API retornará sucesso
 """
 
 
-@address_route.post("/", summary="Criação de novo endereço",description=ADDRESS_CREATION_DESCRIPTION, status_code=status.HTTP_201_CREATED)
-
+@address_route.post("/", summary="Criação de novo endereço",
+    description=ADDRESS_CREATION_DESCRIPTION, status_code=status.HTTP_200_OK)
 async def create_new_address(user: UserForAddress, address: Address):
     new_address = await create_address(user,address)
     return new_address
-
 
 
 @address_route.get("/email/{email}", summary="Pesquisar pelo endereço",
