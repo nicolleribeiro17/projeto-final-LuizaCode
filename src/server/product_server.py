@@ -18,49 +18,61 @@ product_collection = get_collection("product")
 
 # procura pelo SKU
 async def get_by_sku(product_sku: str) -> Optional[dict]:
-    filter = { ProductField.SKU: product_sku }
-    product = await product_collection.find_one(filter)
-    return product
+    try:
+        filter = { ProductField.SKU: product_sku }
+        product = await product_collection.find_one(filter)
+        return product
+    except Exception as e:
+        print(f'get_by_sku.error: {e}') 
 
 # procura pelo código
 async def get_by_code(product_code: str) -> Optional[dict]:
-    filter = { ProductField.CODE: product_code }
-    product = await product_collection.find_one(filter)
-    return product
-
+    try:
+        filter = { ProductField.CODE: product_code }
+        product = await product_collection.find_one(filter)
+        return product
+    except Exception as e:
+        print(f'get_by_code.error: {e}') 
+    
 # procura pelo nome
 async def get_by_name(product_name: str) -> Optional[dict]:
-    filter = {
-        ProductField.NAME: product_name
-    }
-    cursor_pesquisa = product_collection.find(filter)
-    print(cursor_pesquisa)
-    list_all = [
-        product
-        async for product in cursor_pesquisa
-    ]
-    return list_all
+    try:
+        filter = {
+            ProductField.NAME: product_name
+        }
+        cursor_pesquisa = product_collection.find(filter)
+        list_all = [
+            product
+            async for product in cursor_pesquisa
+        ]
+        return list_all
+    except Exception as e:
+        print(f'get_by_name.error: {e}') 
 
 # procura pela categoria
 async def get_by_category(product_category: str) -> Optional[dict]:
-   
-    filter = {
-        ProductField.CATEGORY: product_category
-    }
-    cursor_pesquisa = product_collection.find(filter)
-    print(cursor_pesquisa)
-    list_all = [
-        product
-        async for product in cursor_pesquisa
-    ]
-    return list_all
+    try:
+        filter = {
+            ProductField.CATEGORY: product_category
+        }
+        cursor_pesquisa = product_collection.find(filter)
+        list_all = [
+            product
+            async for product in cursor_pesquisa
+        ]
+        return list_all
+    except Exception as e:
+        print(f'get_by_category.error: {e}') 
 
 # procuta todos os produtos
 async def get_all() -> List[dict]:
-    filter = {}
-    cursor_pesquisa = product_collection.find(filter)
-    list_all = [product async for product in cursor_pesquisa]
-    return list_all
+    try:
+        filter = {}
+        cursor_pesquisa = product_collection.find(filter)
+        list_all = [product async for product in cursor_pesquisa]
+        return list_all
+    except Exception as e:
+        print(f'get_all.error: {e}') 
 
 # cria produto
 async def create_new_product(new_product: dict) -> dict:
@@ -73,15 +85,22 @@ async def create_new_product(new_product: dict) -> dict:
 
 # deleta produto pelo codigo
 async def delete_by_code(product_code: str) -> bool:
-    filter = {ProductField.CODE: product_code}
-    result = await product_collection.delete_one(filter)
-    removed = result.deleted_count > 0
-    return removed
+    try:
+        filter = {ProductField.CODE: product_code}
+        result = await product_collection.delete_one(filter)
+        removed = result.deleted_count > 0
+        return removed
+    except Exception as e:
+        print(f'delete_by_code.error: {e}')  
 
+#Alterar produto pelo codigo
 async def update_product_by_code(product_code: str, product: dict) -> bool:
-    filter = { ProductField.CODE: product_code }
-    update_register = {
-        "$set": product
-    }
-    response = await product_collection.update_one(filter, update_register)
-    return response.modified_count == 1
+    try:
+        filter = { ProductField.CODE: product_code }
+        update_register = {
+            "$set": product
+        }
+        response = await product_collection.update_one(filter, update_register)
+        return response.modified_count == 1
+    except Exception as e:
+        print(f'update_product_by_code.error: {e}')  

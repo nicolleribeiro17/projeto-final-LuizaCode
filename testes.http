@@ -15,7 +15,7 @@ GET http://localhost:8000/api/users/code/d368f6d4-eace-41e0-bffc-83d45fba52ae
 
 ###
 # Delete usuario by code
-DELETE  http://localhost:8000/api/users/d368f6d4-eace-41e0-bffc-83d45fba52ae
+DELETE  http://localhost:8000/api/users/delete/d368f6d4-eace-41e0-bffc-83d45fba52ae
 
 ###
 # Update usuario by code
@@ -31,11 +31,11 @@ POST http://localhost:8000/api/users
 
   {
         "name": "Nicolle",
-        "email": "isadora4@example.com",
+        "email": "nicolle@example.com",
         "password": "123456",
         "is_active": true,
         "is_admin": false
-      }
+  }
 
 
 #=========================================================================#
@@ -68,12 +68,12 @@ POST http://localhost:8000/api/products
 
 {
   "name": "Caneta Bic",
-  "description": "Caneta Amarela",
+  "description": "Caneta Azul",
   "price": 1.50,
   "units_in_stock": 10,
   "image": "url_caneta",
   "category": "escrita",
-  "sku": "135587"
+  "sku": "1355"
 }
 
 ###
@@ -92,94 +92,58 @@ DELETE  http://localhost:8000/api/products/remove/code/d7e316cc-628d-4c83-b1c4-d
 #ADDRESS
 #=========================================================================#
 
-###
-# Cadastro de endereco
-GET http://localhost:8000/api/address
 
 ###
-# Cadastro de endereco
-GET http://localhost:8000/api/address/email/ane4@gmail.com
-
-
-
+# Get endereco por email
+GET http://localhost:8000/api/address/email/nicolle@example.com
 
 
 ###
 # Cadastro de endereco
 POST http://localhost:8000/api/address
 
-{  
+{
   "user": {
-    "user_code": "eacec054-29a3-4759-8cb1-ba522a1d33c6",
-    "email":"ane4@gmail.com"
+    "user_code": "14814bf3-0e52-4999-ac12-d0da36bf2610",
+    "email":"nicolle@example.com"
   },
    "address": {
-    "street": "string",
-    "number": 13,
-    "zip_code": "st56ring",
-    "district": "string",
-    "city": "string",
-    "state": "df",
+    "street": "Rua Canasviais",
+    "number": 200,
+    "zip_code": "54321-000",
+    "district": "Bairro dos Limoeiros",
+    "city": "Sao Paulo",
+    "state": "SP",
     "is_delivery": false
 
   }
 }
 
-
-
 #=========================================================================#
-#ORDER_ITEM
+#CART
 #=========================================================================#
 ###
-# get order_item
-GET http://localhost:8000/api/order_items
- 
-###
-#GET order_item by email
-GET http://localhost:8000/api/order_items/email/isadora3@example.com
- 
-###
-# Get order_item by code
-GET http://localhost:8000/api/order_items/code/d368f6d4-eace-41e0-bffc-83d45fba52ae
- 
-###
-# Delete order_item by code
-DELETE  http://localhost:8000/api/order_items/d368f6d4-eace-41e0-bffc-83d45fba52ae
- 
-###
-# Update order_item by code
-PUT  http://localhost:8000/api/order_items/update/7fdb8e4b-803b-432c-b601-4c4a5357bdb7
- 
-{
-        "email": "isadora@example.com"
-}
- 
- 
-#=========================================================================#
-#ORDER_ITEM
-#=========================================================================#
-###
-# Cadastro de order_item
+# Cadastro de Cart
 POST http://localhost:8000/api/cart
- 
+
   {
     "user": {
-        "user_code": "eacec054-29a3-4759-8cb1-ba522a1d33c6",
-        "email":"ane4@gmail.com"
+        "user_code": "14814bf3-0e52-4999-ac12-d0da36bf2610",
+        "email":"nicolle@example.com"
     },
     "order_item":{
           "product": {
                 "name": "Caneta Bic",
-                "description": "Caneta Azul",
+                "description": "Caneta Amarela",
                 "price": 1.5,
                 "units_in_stock": 10,
                 "image": "url_caneta",
                 "category": "escrita",
-                "sku": "1355"
+                "sku": "135587"
               } ,
-          "quantity": 2           
-        }        
-      
+          "quantity": 1
+        }
+
   }
 
 ###
@@ -192,22 +156,49 @@ DELETE  http://localhost:8000/api/cart/delete/product
 
 {
   "user": {
-        "user_code": "eacec054-29a3-4759-8cb1-ba522a1d33c6",
-        "email":"ane4@gmail.com"
+        "user_code": "14814bf3-0e52-4999-ac12-d0da36bf2610",
+        "email":"nicolle@example.com"
     },
   "product_sku": "13555"
 }
- 
+
 ###
 # deletar produto do carrinho
 PUT  http://localhost:8000/api/cart/update
 
 {
   "user": {
-        "user_code": "eacec054-29a3-4759-8cb1-ba522a1d33c6",
-        "email":"ane4@gmail.com"
+        "user_code": "14814bf3-0e52-4999-ac12-d0da36bf2610",
+        "email":"nicolle@example.com"
     },
-  "product_sku": "13555",
-  "quantity" : 1
+  "product_sku": "135587",
+  "quantity" : 2
 }
- 
+
+#=========================================================================#
+#ORDER_ITEM
+#=========================================================================#
+###
+# Fechar uma ordem
+POST http://localhost:8000/api/order
+
+{
+  "user": {
+    "code": "14814bf3-0e52-4999-ac12-d0da36bf2610"
+  },
+  "address":{
+          "address":{
+          "street": "Rua Canasviais",
+          "number": 200,
+          "zip_code": "54321-000",
+          "district": "Bairro dos Limoeiros",
+          "city": "Sao Paulo",
+          "state": "SP",
+          "is_delivery": false
+    }
+  },
+
+  "order": {
+
+  }
+}

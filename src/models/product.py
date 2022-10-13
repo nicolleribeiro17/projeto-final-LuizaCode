@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, Field
 
-#modifiquei o sku para um str 
+
 class Product(BaseModel):
     name: str = Field(...,max_length=100)
     description: str = Field(...,max_length=100)
@@ -23,8 +23,6 @@ class ProductUpdated(BaseModel):
 class ProductCode(BaseModel):
     code: str = Field(..., description="Codigo do Produto, no formato uuid v4")
 
-# class ProductSku(BaseModel):
-#     sku: str = Field(..., description="Sku do Produto, no formato uuid v4")
 
 class ProductGeneral(ProductCode, Product):
     ...

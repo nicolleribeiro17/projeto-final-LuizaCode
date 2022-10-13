@@ -1,92 +1,64 @@
 from typing import List
-
-from pydantic import BaseModel, Field
-
+ 
 import service.user_rules as user_rules
 from fastapi import APIRouter, status
 from models.user import User, UserCode, UserGeneral, UserUpdate
-
-# Minha rota API de Usuários
+from router.error import HasAnotherEmail
+from description.user_description import (
+     CreationDescription, CodeDescription, DeleteDescription, EmailDescription, UpdateDescription, UserDescription
+    )
+ 
 user_route = APIRouter(prefix="/api/users",tags=["Users"],)
-
-USER_CREATION_DESCRIPTION = """
-Criação de um novo usuário. Para registrar um novo usuário:
-
-- `nome` Deve ter no minimo 6 caracteres.
-- `email`: Deve ter nome único.
-- `password`: Deve ter uma senha.
-- `is_active`: boolean.
-- `is_admin`: boolean.
-
-
-Se o usuário for criado corretamente a API retornará sucesso
-(código HTTP 201) e no corpo da resposta um registro com o campo
-`codigo`, que é o código do novo usuário em nosso sistema.
-"""
-
-# Colocamos este modelo aqui, SOMENTE para ficar perto da documentação.
-# Seria apropriado criar um 'modelo' para cada erro??
-
-class HasAnotherEmail(BaseModel):
-    """
-    Outro usuário possui o mesmo email que o usuário corrente.
-    """
-    message: str = Field(..., description="Mensagem com a causa do problema")
-
-    class Config:
-        schema_extra = {
-            "example": {
-            "message": "Há outro usuário com este email",
-            }}
-
-
-@user_route.post("/", summary="Criação de novo usuário",description=USER_CREATION_DESCRIPTION, status_code=status.HTTP_201_CREATED, response_model = UserCode,
+ 
+@user_route.post("/", summary="Criação de novo usuário",description=CreationDescription.USER_CREATION_DESCRIPTION, status_code=status.HTTP_201_CREATED, response_model = UserCode,
     responses={
         status.HTTP_409_CONFLICT: {
-            "description": "Já temos outro usuário com este email.",
+            "description": "Já existe outro usuário com este email.",
             "model": HasAnotherEmail
         }
     },
 )
-
+ 
 async def create_new_user(user: User):
-    new_user = await user_rules.insert_new_user(user)
+    new_user = await user_rules.create_new_user(user)
     return new_user
+ 
 
-@user_route.put("/update/{code}",status_code=status.HTTP_202_ACCEPTED,
+@user_route.put("/update/{code}",status_code=status.HTTP_200_OK,
     summary="Atualização do usuário",
-    description="Atualiza um usuário pelo código",
+    description=UpdateDescription.USER_UPDATE_DESCRIPTION,
 )
 async def update_user(code: str, user: UserUpdate):
     await user_rules.update_by_code(code, user)
+ 
 
-
-@user_route.delete("/{code}", status_code=status.HTTP_202_ACCEPTED, summary="Remoção do usuário",
-    description="Remove o usuário pelo código",)
-
+@user_route.delete("/delete/{code}", status_code=status.HTTP_200_OK, summary="Remoção do usuário",
+    description=DeleteDescription.USER_DELETE_DESCRIPTION,)
+ 
 async def remove_user(code: str):
     await user_rules.remove_by_code(code)
+ 
 
-
-@user_route.get("/code/{code}",response_model=UserGeneral,summary="Pesquisar pelo usuário",
-    description="Pesquisar um usuário pelo código")
+@user_route.get("/code/{code}",response_model=UserGeneral,status_code=status.HTTP_200_OK,summary="Pesquisar pelo usuário",
+    description=CodeDescription.GET_USER_CODE_DESCRIPTION)
 async def get_user_by_code(code: str):
     user = await user_rules.search_by_code(code, True)
     return user
+ 
 
-
-@user_route.get("/",response_model=List[UserGeneral],
-    summary="Pesquisar todos os usuários",
-    description="Pesquisar por todos os usuários.",)
-
+@user_route.get("/",response_model=List[UserGeneral], status_code=status.HTTP_200_OK,
+    summary="Pesquisar todos os usuários", description=UserDescription.GET_ALL_DESCRIPTION,)
+ 
 async def get_all_users() -> List[UserGeneral]:
    
     all = await user_rules.search_all()
     return all
+ 
 
-@user_route.get("/email/{email}",response_model=UserGeneral,summary="Pesquisar pelo usuário",
-    description="Pesquisar um usuário pelo código")
+@user_route.get("/email/{email}",response_model=UserGeneral,status_code=status.HTTP_200_OK,
+summary="Pesquisar pelo usuário", description=EmailDescription.GET_USER_EMAIL_DESCRIPTION)
 async def get_user_by_code(email: str):
-    
+   
     user = await user_rules.search_by_email(email, True)
     return user
+ 

@@ -19,35 +19,53 @@ class UserField:
 user_collection = get_collection("user")
 
 async def get_by_code(user_code: str) -> Optional[dict]:
-    filter = { UserField.CODE: user_code }
-    user = await user_collection.find_one(filter)
-    return user
+    try:
+        filter = { UserField.CODE: user_code }
+        user = await user_collection.find_one(filter)
+        return user
+    except Exception as e:
+        print(f'get_by_code.error: {e}') 
 
 async def get_all() -> List[dict]:
-    filter = {}
-    cursor_pesquisa = user_collection.find(filter)
-    list_all = [user async for user in cursor_pesquisa]
-    return list_all
+    try:
+        filter = {}
+        cursor_pesquisa = user_collection.find(filter)
+        list_all = [user async for user in cursor_pesquisa]
+        return list_all
+    except Exception as e:
+        print(f'get_all.error: {e}') 
 
 async def get_by_email(email: str) -> Optional[dict]:
-    filter = { UserField.EMAIL: email }
-    user = await user_collection.find_one(filter)
-    return user
+    try:
+        filter = { UserField.EMAIL: email }
+        user = await user_collection.find_one(filter)
+        return user
+    except Exception as e:
+        print(f'get_by_email.error: {e}') 
 
 async def create_new_user(new_user: dict) -> dict:
-    await user_collection.insert_one(new_user)
-    return new_user
+    try:
+        await user_collection.insert_one(new_user)
+        return new_user
+    except Exception as e:
+        print(f'create_new_user.error: {e}')
 
 async def delete_by_code(user_code: str) -> bool:
-    filter = {UserField.CODE: user_code}
-    result = await user_collection.delete_one(filter)
-    removed = result.deleted_count > 0
-    return removed
+    try:
+        filter = {UserField.CODE: user_code}
+        result = await user_collection.delete_one(filter)
+        removed = result.deleted_count > 0
+        return removed
+    except Exception as e:
+        print(f'delete_by_code.error: {e}')
 
 async def update_user_by_code(user_code: str, user: dict) -> bool:
-    filter = { UserField.CODE: user_code }
-    update_register = {
-        "$set": user
-    }
-    response = await user_collection.update_one(filter, update_register)
-    return response.modified_count == 1
+    try:
+        filter = { UserField.CODE: user_code }
+        update_register = {
+            "$set": user
+        }
+        response = await user_collection.update_one(filter, update_register)
+        return response.modified_count == 1
+    except Exception as e:
+        print(f'update_user_by_code.error: {e}')

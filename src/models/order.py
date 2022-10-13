@@ -1,18 +1,20 @@
 from datetime import datetime
+from email.headerregistry import Address
 from typing import Optional, List
 from pydantic import BaseModel, Field
-from models.cart import  Cart
-from models.address import  Address
-from models.user import UserForAddress
+from models.address import orderAddress
+from models.user import UserCode
 
 class Order(BaseModel):
-    #E o pedido final que ja nao vai mais ser modificado. Ele contem um cart contem 
-    # os produtos ja agrupados com sua quantidade e preco   
     createdAt: datetime = Field(default= datetime.now())
-    discount: float = Field(...,ge=0.01)
-    totalPrice: float = Field(...,ge=0.01) ## cart.price - discount    
-    paymentId: str = Field(None,min_lenght = 24, max_lenght = 24)    
-    status: int = Field(...,ge=1)  ## 1- pago, 2- Aguardando pagamento..
+    discount: float = Field(default= 0.00,ge=0.00)
+    totalPrice: Optional[float] ## O Valor e fechado no checkout
+    numberItens:Optional[int]
+    paymentId: Optional[str]   
+    status: int = Field(default= 1,ge=1)  ## 1- Aguardando pagamento, 2- pago..
       
-class OrderGeneral(UserForAddress,Cart,Address,Order):
-    ...
+class OrderGeneral(BaseModel):
+    user: UserCode
+    address: Optional[orderAddress]
+    order: Order
+    

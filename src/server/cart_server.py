@@ -67,37 +67,3 @@ async def update_quantity(filter: Dict, update: Dict):
     except Exception as e:
         print(f'update_quantity.error: {e}')    
  
-
-
-# async def remove_from_cart(filter: dict) -> bool:
-    
-#     result = await cart_collection.update_one(filter,
-#     { "$pull": {"orderItem.product.$.sku": '13555'}})
-#     removed = result.deleted_count > 0
-#     return removed
-
-
-# def update_item(self, product, quantity, option_values=[]):
-#         """
-#         To update :class:`CartItem` object quantity.
-        
-#         :param product: Unique id or name of :class:`Product` object or instance of :class:`Product`.
-#         :param quantity: Updated quantity.
-#         :param option_values: Option values of the product(default []).
-#         """
-#         if not isinstance(quantity, (int, float)):
-#             raise TypeError('quantity field value must be integer or float type', 'price')
-#         elif not (quantity or quantity >= 1):
-#             raise ValueError('quantity field value must be greater then 1')
-            
-#         cart_item = self.find_item(product, option_values)
-        
-#         if cart_item:
-#             cart_item.update_quantity(quantity)
-
-# def update_quantity(self, quantity):
-#     """
-#     To update existing quantity related to :class:`Product` object.
-#     :param quantity: Product quantity.
-#     """
-#     self.quantity = quantity

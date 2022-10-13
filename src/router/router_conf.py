@@ -12,11 +12,8 @@ from router.cart_router import cart_route
 from router.order_router import order_route
 
 def ExceptionNotFound_Response(requisicao: Request, excecao: ExceptionNotFound):
-    # Responde o erro 404
     return JSONResponse(
-        # Código HTTP da resposta
         status_code=status.HTTP_404_NOT_FOUND,
-        # Mensagem
         content={
             "mensagem": excecao.mensagem
         }
@@ -24,11 +21,8 @@ def ExceptionNotFound_Response(requisicao: Request, excecao: ExceptionNotFound):
 
 
 def OtherExceptionRules_Response(requisicao: Request, excecao: OtherExceptionRules):
-    # Responde o erro 409
     return JSONResponse(
-        # Código HTTP da resposta
         status_code=status.HTTP_409_CONFLICT,
-        # Mensagem
         content={
             "mensagem": excecao.mensagem
         }
@@ -44,7 +38,6 @@ def Exception_Interceptor_Config(app: FastAPI) -> Tuple[Callable]:
     async def Other_Exception_Rules_Interceptor(request: Request, exc: OtherExceptionRules):
         return OtherExceptionRules_Response(request, exc)
 
-    # Vamos retornar as funções interceptadoras em uma tupla
     return (
         Exception_Not_Found_Interceptor,
         Other_Exception_Rules_Interceptor,
@@ -52,13 +45,15 @@ def Exception_Interceptor_Config(app: FastAPI) -> Tuple[Callable]:
 
 
 def configurar_rotas(app: FastAPI):
-    # Publicando as rotas para o FastAPI.
     app.include_router(principal_route)
     app.include_router(user_route)
-    app.include_router(product_route)
     app.include_router(address_route)
+    app.include_router(product_route)    
     app.include_router(cart_route)
     app.include_router(order_route)
+
+
+##CONFIGURACAO DE CORS, NAO SERA NECESSARIO PARA O NOSSO PROJETO
 
 # def configurar_api_rest(app: FastAPI):
 #     # Configurando o CORS
@@ -74,19 +69,7 @@ def configurar_rotas(app: FastAPI):
 
 
 def criar_aplicacao_fastapi():
-    # Crio a aplicação FastAPI
     app = FastAPI()
-        # Título da aplicação. Será usado como título do Swagger.
-    #     name= "Luiza Magalu",
-    #     email= "lu_domagalu@gmail.com",
-    #     password= "213sd312re3",
-    #     is_active= True,
-    #     is_admin= False
-    # )
-
-    # Configuro a aplicação FastAPI
-    # configurar_api_rest(app)
-    # ... e configuro suas rotas
     configurar_rotas(app)
 
     return app

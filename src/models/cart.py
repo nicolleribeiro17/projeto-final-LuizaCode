@@ -5,8 +5,6 @@ from models.user import UserForAddress
 
 
 class Cart(BaseModel):
-    #Esse codigo e a interface do carrinho de mercado. Ele recebe os produtos ja agrupados com sua quantidade e preco
-    #Ele e conjunto de order items-
     user: UserForAddress
     orderItem: List[OrderItem] = []
     total_value: float
@@ -15,8 +13,9 @@ class Cart(BaseModel):
 class CartCode(BaseModel):
     code: str = Field(..., description="Código do carrinho, no formato uuid v4")
    
-class CartGeneral(CartCode, Cart):
-    ...
+class CartGeneral(BaseModel):
+    cart_code:CartCode
+    cart:Cart
   
 class CartUpdate(BaseModel):
     user: UserForAddress

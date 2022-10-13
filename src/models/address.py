@@ -28,9 +28,17 @@ class AddressUpdate(BaseModel):
     is_delivery: Optional[bool]
 
 
-class AddressGeneral(AddressCode,  Address):
-    ...
+class AddressGeneral(BaseModel):
+    address_code: AddressCode
+    address:Address
 
 class UserAddress(BaseModel):
     user: UserForAddress
     address: List[Address] = []
+
+
+class orderAddress(BaseModel):
+    address_code: Optional[str]
+    address: Optional[Address] 
+    
+

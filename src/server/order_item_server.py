@@ -1,7 +1,0 @@
-
-
-
-
-class OrderItemField:
-    PRICE = "price"
-    

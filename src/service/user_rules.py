@@ -28,8 +28,7 @@ async def search_if_user_exists(code: str) -> bool:
     return user 
 
 
-async def search_by_email(email: str, throws_exception_if_not_found: bool = False) -> Optional[dict]:
-   
+async def search_by_email(email: str, throws_exception_if_not_found: bool = False) -> Optional[dict]:   
     user_mail = await user_server.get_by_email(email)
     if not user_mail and throws_exception_if_not_found:
         raise ExceptionNotFound("Usuário não encontrado")
@@ -41,6 +40,7 @@ async def search_all() -> List[dict]:
     return all
 
 
+#validacao do usuario
 async def validate_user(user: User, code_base: Optional[str] = None):
     is_new_user = code_base is None
 
@@ -51,17 +51,14 @@ async def validate_user(user: User, code_base: Optional[str] = None):
     ):
         raise OtherExceptionRules("Há outro usuário com este email")
 
-      
+#validacao de email  
 async def check_email(email):    
     regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
     if not re.search(regex,email) :
         raise OtherExceptionRules("Email invalido")
    
-      
-  
-
-
-async def insert_new_user(user: User) -> UserGeneral:
+#cria um novo usuario  
+async def create_new_user(user: User) -> UserGeneral:
     await validate_user(user)
     await check_email(user.email)
     new_user = user.dict()
@@ -70,14 +67,14 @@ async def insert_new_user(user: User) -> UserGeneral:
     user_geral = UserGeneral(**new_user)
     return user_geral
 
-
+#Remove  usuario pelo codigo
 async def remove_by_code(code: str):
     remove = await user_server.delete_by_code(code)
 
     if not remove:
         raise ExceptionNotFound("Usuário não encontrada")
 
-
+#Altera o usuario pelo codigo
 async def update_by_code(code: str, user: UserUpdate):
     
     await search_by_code(code, True)

@@ -55,8 +55,8 @@ async def validate_product(product: Product, code_base: Optional[str] = None):
     ):
         raise OtherExceptionRules("Há outro produto com este sku")
 
-
-async def insert_new_product(product: Product) -> ProductGeneral:
+# Cria um novo produto
+async def crate_new_product(product: Product) -> ProductGeneral:
     await validate_product(product)
     new_product = product.dict()
     new_product[product_server.ProductField.CODE] = str(uuid4())
@@ -64,12 +64,14 @@ async def insert_new_product(product: Product) -> ProductGeneral:
     product_geral = ProductGeneral(**new_product)
     return product_geral
 
+#Remove o produto pelo codigo
 async def remove_by_code(code: str):
     remove = await product_server.delete_by_code(code)
 
     if not remove:
         raise ExceptionNotFound("Usuário não encontrada")
 
+#Altera o produto
 async def update_by_code(code: str, product: ProductUpdated):
 
     await search_by_code(code, True)

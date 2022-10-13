@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-# Minha API da rota principal
+
 principal_route = APIRouter(prefix="",tags=["Principal",],)
 
 
