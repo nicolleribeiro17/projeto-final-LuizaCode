@@ -94,6 +94,9 @@ Organizamos a estrutura do nosso projeto em varias módulos, sendo que, cada uma
    - [`server`](https://github.com/nicolleribeiro17/projeto-final-LuizaCode/tree/main/src/server): Módulo para persistência (repositório) 
   com o banco de dados.
    - [`descriptions`](https://github.com/nicolleribeiro17/projeto-final-LuizaCode/tree/main/src/description): Local onde colocamos todas as descrições feitas pela requisição web.
+   - [`main.py`](https://github.com/nicolleribeiro17/projeto-final-LuizaCode/blob/main/src/main.py): Principal.
+   - [`config.py`](https://github.com/nicolleribeiro17/projeto-final-LuizaCode/blob/main/src/config.py): Configuração;
+   
   
   
   + Como realizar:
@@ -117,7 +120,7 @@ Organizamos a estrutura do nosso projeto em varias módulos, sendo que, cada uma
    + Testando as APIs criadas
    
    
-      Tal como a etapa anteriror, o arquivo [testes](https://github.com/nicolleribeiro17/projeto-final-LuizaCode/blob/main/testes.http) é utilizado com a extensão Rest Client do Visual Code.
+      O arquivo [testes.http](https://github.com/nicolleribeiro17/projeto-final-LuizaCode/blob/main/testes.http) ou [Swagger](http://localhost:8000/docs/) será utilizado para realizar testes.
    
  
  </details>
@@ -146,8 +149,8 @@ Organizamos a estrutura do nosso projeto em varias módulos, sendo que, cada uma
       | `name`      | `string` | *Obrigatório*. O nome do cliente|
       | `email`      | `EmailStr` | *Obrigatório*. O email do cliente |
       | `password`      | `string` | *Obrigatório*. A senha do cliente |
-      | `password`      | `string` | *Opcional*. Senha do cliente |
-      | `password`      | `string` | *Opcional*. Senha do cliente |
+      | `is_active`      | `bool` | *Obrigatório*. Usuário está ativo ou não|
+      | `is_admin`      | `bool` | *Obrigatório*. Usuário é admin ou não |
 
 
 
@@ -163,8 +166,8 @@ Organizamos a estrutura do nosso projeto em varias módulos, sendo que, cada uma
       | `name`      | `string` | *Opcional*. Nome do cliente|
       | `email`      | `EmailStr` | *Opcional*. Email do cliente |
       | `password`      | `string` | *Opcional*. Senha do cliente |
-      | `password`      | `string` | *Opcional*. Senha do cliente |
-      | `password`      | `string` | *Opcional*. Senha do cliente |
+      | `is_active`      | `bool` | *Opcional*. Usuário está ativo ou não|
+      | `is_admin`      | `bool` | *Opcional*. Usuário é admin ou não |
 
 
 
@@ -221,7 +224,7 @@ Organizamos a estrutura do nosso projeto em varias módulos, sendo que, cada uma
       | `district`      | `string` | *Obrigatório*. Bairro|
       | `city`      | `string` | *Obrigatório*. Nome da cidade|
       | `state`      | `string` | *Obrigatório*. Sigla do estado|
-      | `is_delivery`      | `string` | *Obrigatório*. |
+      | `is_delivery`      | `bool` | *Obrigatório*. Se o produto foi entregue |
 
 
   + Retorna todos os endereços do usuário através do email:
@@ -390,6 +393,19 @@ Organizamos a estrutura do nosso projeto em varias módulos, sendo que, cada uma
       | `code`      | `string` | *Obrigatório*. O código do produto que você quer atualizar. |
       | `quantity`      | `int` | *Obrigatório*. Quantidade do produto |
 
+  + Deletar o produto no carrinho por meio de seu código:
+
+      http
+        PUT api/cart/update/{code}
+
+
+      | Parâmetro   | Tipo       | Descrição                                   |
+      | :---------- | :--------- | :------------------------------------------ |
+      | `user_code`      | `string` | *Obrigatório*. Código do usuário|
+      | `email`      | `EmailStr` | *Obrigatório*. Email do usuário |      
+      | `code`      | `string` | *Obrigatório*. O código do produto que você quer atualizar. |
+      | `quantity`      | `int` | *Obrigatório*. Quantidade do produto |
+
 
 </details>
 
@@ -414,9 +430,11 @@ Organizamos a estrutura do nosso projeto em varias módulos, sendo que, cada uma
        ✔️ Ao pesquisarmos o email válido do cliente, será apresentado seus dados. 
        ✔️ Ao remover o usuário cadastrado, será apagado todas as informações do mesmo. 
        </pre>
-      Na API, se conseguirmos cadastrar o usuário no banco de dados, iremos retornar o código HTTP 201 (Criado/Created), e no corpo de resposta iremos informar apenas o ????????????????????:
+      Na API, se conseguirmos cadastrar o usuário no banco de dados, iremos retornar o código HTTP 201 (Criado/Created), e no corpo de resposta iremos informar apenas o código do usuário:
       
-          ---------------- checar -----------
+        {
+          "code": "uuid v4"
+        }
 
       Se ao tentar cadastrar um novo usuário, e houver um usuário já cadastrado com o mesmo email, a API retornará o código HTTP 409 (Conflito/Conflict) informando a seguinte mensagem:
 
@@ -453,11 +471,13 @@ Organizamos a estrutura do nosso projeto em varias módulos, sendo que, cada uma
        ✔️ Os nomes dos produtos são únicos.
        </pre>
        
-      Na API, se conseguirmos cadastrar o produto no banco de dados, iremos retornar o código HTTP 201 (Criado/Created), e no corpo de resposta iremos informar apenas o:
+      Na API, se conseguirmos cadastrar o produto no banco de dados, iremos retornar o código HTTP 201 (Criado/Created), e no corpo de resposta iremos informar apenas o código do produto:
       
-          --------------------------------------------checar---------------------:
+        {
+          "code": "uuid v4"
+        }
 
-      Se ao tentar cadastrar um novo produto, e houver item com o mesmo nome, a API retornará o código HTTP 409 (Conflito/Conflict) informando a seguinte mensagem:
+      Se ao tentar cadastrar um novo produto, e houver item com o mesmo SKU, a API retornará o código HTTP 409 (Conflito/Conflict) informando a seguinte mensagem:
 
         {
           "mensagem": "Há outro produto com este sku"
@@ -468,7 +488,7 @@ Organizamos a estrutura do nosso projeto em varias módulos, sendo que, cada uma
     
       Vamos realizar a atualização de um produto, isso implica em utilizarmos a API para "enviar" a requisição de atualizar o produto em nosso banco de dados.
 
-        PUT http://localhost:8000/api/products/update/code/
+        PUT http://localhost:8000/api/products/update/{code}
         
       Antes de atualizar um produto, será validado as seguintes regras:
       
@@ -499,7 +519,7 @@ Organizamos a estrutura do nosso projeto em varias módulos, sendo que, cada uma
   
      Etapa de remoção do produto: 
     
-        DELETE  http://localhost:8000/api/products/remove/code/
+        DELETE  http://localhost:8000/api/products/remove/{code}
         
 
 </details>
@@ -536,10 +556,11 @@ Organizamos a estrutura do nosso projeto em varias módulos, sendo que, cada uma
 
 </details>
 
-<details><summary><strong><h4>Etapa 06: Swagger.</strong></h4></summary>
-  
-      
-</details>  
+<h2 align="center"> CRIADORAS </h2>
+
+<a href="https://www.linkedin.com/in/isadora-eduarda-6b2001180/" target="_blank_"><img height="15cm" src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/> 
+<a href="https://www.linkedin.com/in/juliana-abumansur-3359ba114/" target="_blank_"><img height="15cm" src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/> 
+<a href="https://www.linkedin.com/in/nicolle-ribeiro-89ab8b1b3/" target="_blank_"><img height="15cm" src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
   
   
 
