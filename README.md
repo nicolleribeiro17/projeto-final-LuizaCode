@@ -564,7 +564,7 @@ Organizamos a estrutura do nosso projeto em varias módulos, sendo que, cada uma
 
 <a href="https://github.com/isadoraeduarda/" target="_blank_"><img height="15cm" src="https://img.shields.io/badge/ISADORA-100000?style=for-the-badge&logo=github&logoColor=white"/>
 <a href="https://github.com/jtabumansur" target="_blank_"><img height="15cm" src="https://img.shields.io/badge/JULIANA-100000?style=for-the-badge&logo=github&logoColor=white"/>
-<a href="https://www.linkedin.com/in/nicolle-ribeiro-89ab8b1b3/" target="_blank_"><img height="15cm" src="https://img.shields.io/badge/NICOLLE-100000?style=for-the-badge&logo=github&logoColor=white"/>
+<a href="https://github.com/nicolleribeiro17" target="_blank_"><img height="15cm" src="https://img.shields.io/badge/NICOLLE-100000?style=for-the-badge&logo=github&logoColor=white"/>
 
 <h2 align="center"> STACK UTILIZADA </h2>
 
