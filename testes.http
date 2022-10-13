@@ -30,8 +30,8 @@ PUT  http://localhost:8000/api/users/update/7fdb8e4b-803b-432c-b601-4c4a5357bdb7
 POST http://localhost:8000/api/users
 
   {
-        "name": "Nicolle",
-        "email": "nicolle@example.com",
+        "name": "Isadora",
+        "email": "isadora@example.com",
         "password": "123456",
         "is_active": true,
         "is_admin": false
@@ -152,15 +152,15 @@ DELETE  http://localhost:8000/api/cart/2e0f13e5-3de7-410f-aa36-4a8ec6801cf2
 
 ###
 # deletar produto do carrinho
-DELETE  http://localhost:8000/api/cart/delete/product
+# DELETE  http://localhost:8000/api/cart/delete/product
 
-{
-  "user": {
-        "user_code": "14814bf3-0e52-4999-ac12-d0da36bf2610",
-        "email":"nicolle@example.com"
-    },
-  "product_sku": "13555"
-}
+# {
+#   "user": {
+#         "user_code": "f654aaf6-757a-4341-b068-383315b1a063",
+#         "email":"isadora@example.com"
+#     },
+#   "product_sku": "1355"
+# }
 
 ###
 # deletar produto do carrinho
@@ -168,11 +168,11 @@ PUT  http://localhost:8000/api/cart/update
 
 {
   "user": {
-        "user_code": "14814bf3-0e52-4999-ac12-d0da36bf2610",
-        "email":"nicolle@example.com"
+        "user_code": "f654aaf6-757a-4341-b068-383315b1a063",
+        "email":"isadora@example.com"
     },
-  "product_sku": "135587",
-  "quantity" : 2
+  "product_sku": "1355",
+  "quantity" : 0
 }
 
 #=========================================================================#

@@ -73,7 +73,12 @@ async def update_quantity(cartUpdate: CartUpdate):
     old_price = existintProduct['price']
     old_quantity = existintProduct['quantity']
     price = cartUpdate.quantity * existintProduct['unit_price']
-    
+
+    empty_cart = await check_empty_cart(cartUpdate,existingCart)
+
+    if empty_cart:
+        await remove_cart(existingCart['code'])    
+
     filter =  {'code': existingCart['code'], 'orderItem.product.sku': cartUpdate.product_sku}
     update= {'$inc':  { 'total_value': price - old_price,
                         'total_itens':cartUpdate.quantity-old_quantity,
@@ -87,6 +92,11 @@ async def update_quantity(cartUpdate: CartUpdate):
 async def get_cart_by_user(code: str):
     cart = await cart_server.get_cart_by_user_id(code)    
     return cart
+
+async def check_empty_cart(cartUpdate: CartUpdate, existingCart: Cart):
+    if (cartUpdate.quantity == 0 and len(existingCart['orderItem']) == 1):
+        return True
+    return False
 
 #Retorna um carrinho pelo codigo do usuario para fechar o pedido
 async def  get_cart_by_user_order(code: str):
