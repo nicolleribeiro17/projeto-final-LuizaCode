@@ -1,11 +1,11 @@
-pip install fastapi==0.85.0
-pip install fastapi-mail
-pip install uvicorn==0.18.3
-pip install pydantic
-pip install redis
-pip install motor==3.0.0
-pip install python-decouple
-pip install python-multipart
-pip install PyJWT
-pip install passlib
-pip install python-dotenv==0.21.0
+fastapi==0.85.0
+fastapi-mail
+uvicorn==0.18.3
+pydantic
+redis
+motor==3.0.0
+python-decouple
+python-multipart
+PyJWT
+passlib
+python-dotenv==0.21.0
